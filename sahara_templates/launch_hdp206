@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Close STDERR
+#exec 2<&-
+
+TENANT_ID=$(keystone token-get 2>/dev/null |  awk '/ tenant_id / {print $4;}')
+OS_TENANT_ID=${OS_TENANT_ID:-$TENANT_ID}
+echo $OS_TENANT_ID
+
+IMG_ID=$(nova image-list | grep "Hortonworks"  | grep "2.0.6" | awk 'NR==1 {print $2}')
+IMAGE_ID=${IMAGE_ID:-$IMG_ID}
+echo IMAGE_ID=$IMAGE_ID
+
+PUB1_NET=$(nova net-list | awk '/ public / {print $2; exit}')
+PUB2_NET=$(nova net-list | awk '/ internet / {print $2; exit}')
+PUBLIC_NET=${PUBLIC_NET:-${PUB1_NET:-$PUB2_NET}}
+echo PUBLIC_NET=$PUBLIC_NET
+
+PRI_NET=$(nova net-list | awk '!/(+|ID|public|internet)/ {print $2; exit}')
+PRIVATE_NET=${PRIVATE_NET:-$PRI_NET}
+echo PRIVATE_NET=$PRIVATE_NET
+
+KEY_ID=$(nova keypair-list | awk '!/(+|Name)/ {print $2; exit}')
+KEYPAIR_ID=${KEYPAIR:-$KEY_ID}
+echo KEYPAIR_ID=$KEYPAIR_ID
+
+FLAVOR_ID=${FLAVOR_ID:-23}
+echo FLAVOR_ID=$FLAVOR_ID
+
+if [ $SAHARA_URL ]; then
+  sa="sahara --insecure --bypass-url $SAHARA_URL/v1.1/$OS_TENANT_ID"
+else
+  sa="sahara "
+fi 
+echo $sa
+
+sed "s/_flavorid/$FLAVOR_ID/"  h206/h206master1 > h206/h206master1_temp
+sed -i "s/_public_net/$PUBLIC_NET/" h206/h206master1_temp
+master1id=`$sa node-group-template-create --json h206/h206master1_temp | awk '/ id / {print \$4}'`
+if [ -z $master1id ]; then
+  master1id=`$sa node-group-template-list | awk '/h206master1/ {print $4; exit;}'`
+fi
+echo h206master1 ID: $master1id
+
+sed "s/_flavorid/$FLAVOR_ID/"  h206/h206master2 > h206/h206master2_temp
+sed -i "s/_public_net/$PUBLIC_NET/" h206/h206master2_temp
+master2id=`$sa node-group-template-create --json h206/h206master2_temp | awk '/ id / {print \$4}'`
+if [ -z $master2id ]; then
+  master2id=`$sa node-group-template-list | awk '/h206master2/ {print $4; exit}'`
+fi
+echo h206master2 ID: $master2id
+
+sed "s/_flavorid/$FLAVOR_ID/" h206/h206worker > h206/h206worker_temp 
+sed -i "s/_public_net/$PUBLIC_NET/" h206/h206worker_temp
+workerid=`$sa node-group-template-create --json h206/h206worker_temp | awk '/ id / {print $4}'`
+if [ -z $workerid ]; then
+  workerid=`$sa node-group-template-list | awk '/h206worker/ {print $4; exit;}'`
+fi
+echo h206worker ID: $workerid
+
+sed "s/_master1id/$master1id/" h206/h206cluster > h206/h206cluster_temp
+sed -i "s/_master2id/$master2id/" h206/h206cluster_temp
+sed -i "s/_workerid/$workerid/" h206/h206cluster_temp
+clusterid=`$sa cluster-template-create --json h206/h206cluster_temp | awk '/ id / {print $4}'`
+if [ -z $clusterid ]; then
+  clusterid=`$sa cluster-template-list | awk '/h206 / {print $4; exit;}'`
+fi
+echo cluster ID: $clusterid
+
+sed "s/_clusterid/$clusterid/" h206/h206launch > h206/h206launch_temp
+sed -i "s/_imageid/$IMAGE_ID/" h206/h206launch_temp
+sed -i "s/_private_net/$PRIVATE_NET/" h206/h206launch_temp
+sed -i "s/_keypairid/$KEYPAIR_ID/" h206/h206launch_temp
+#$sa cluster-create --json h206/h206launch_temp
+ 

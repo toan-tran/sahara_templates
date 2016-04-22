@@ -1,0 +1,16 @@
+#!/bin/bash
+sa="sahara --insecure --bypass-url https://$SAHARA_IP:8386/v1.1/0f4f16075563476781d777875558ee76"
+
+imageid=07ac72b1-5321-41ab-9a53-934d8d9038f2
+
+masterid=`$sa node-group-template-create --json v121/v121master | awk '/ id / {print \$4}'`
+workerid=`$sa node-group-template-create --json v121/v121worker | awk '/ id / {print $4}'`
+sed "s/_masterid/$masterid/" v121/v121cluster > v121/v121cluster_temp
+sed -i "s/_workerid/$workerid/" v121/v121cluster_temp
+
+clusterid=`$sa cluster-template-create --json v121/v121cluster_temp | awk '/ id / {print $4}'`
+sed "s/_clusterid/$clusterid/" v121/v121launch > v121/v121launch_temp
+sed -i "s/_imageid/$imageid/" v121/v121launch_temp
+
+$sa cluster-create --json v121/v121launch_temp
+ 

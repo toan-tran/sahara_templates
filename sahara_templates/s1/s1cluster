@@ -1,0 +1,18 @@
+{
+   "plugin_name": "spark",
+   "hadoop_version": "1.0.0",
+   "node_groups": [
+       {
+           "name": "s1master",
+           "count": 1,
+           "node_group_template_id": "_masterid"
+       },
+       {
+           "name": "s1worker",
+           "count": 3,
+           "node_group_template_id": "_workerid"
+       }
+   ],
+   "name": "s1",
+   "cluster_configs": {}
+}

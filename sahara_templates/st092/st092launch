@@ -1,0 +1,10 @@
+{
+    "plugin_name": "storm",
+    "hadoop_version": "0.9.2",
+    "cluster_template_id": "_clusterid",
+    "default_image_id": "_imageid",
+    "user_keypair_id": "_keypairid",
+    "neutron_management_network": "_private_net",
+    "name": "st092",
+    "cluster_configs": {}
+}

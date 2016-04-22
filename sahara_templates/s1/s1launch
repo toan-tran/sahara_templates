@@ -1,0 +1,10 @@
+{
+    "plugin_name": "spark",
+    "hadoop_version": "1.0.0",
+    "cluster_template_id": "_clusterid",
+    "default_image_id": "_imageid",
+    "user_keypair_id": "_keypairid",
+    "neutron_management_network": "_private_net",
+    "name": "s1",
+    "cluster_configs": {}
+}

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Close STDERR
+#exec 2<&-
+
+TENANT_ID=$(keystone token-get 2>/dev/null |  awk '/ tenant_id / {print $4;}')
+OS_TENANT_ID=${OS_TENANT_ID:-$TENANT_ID}
+
+IMG_ID=$(nova image-list | grep "Apache"  | grep "2.7.1" | awk 'NR==1 {print $2}')
+IMAGE_ID=${IMAGE_ID:-$IMG_ID}
+
+PUB1_NET=$(nova net-list | awk '/ public / {print $2; exit}')
+PUB2_NET=$(nova net-list | awk '/ internet / {print $2; exit}')
+PUBLIC_NET=${PUBLIC_NET:-${PUB1_NET:-$PUB2_NET}}
+
+PRI_NET=$(nova net-list | awk '!/(+|ID|public|internet)/ {print $2; exit}')
+PRIVATE_NET=${PRIVATE_NET:-$PRI_NET}
+
+KEY_ID=$(nova keypair-list | awk '!/(+|Name)/ {print $2; exit}')
+KEYPAIR_ID=${KEYPAIR:-$KEY_ID}
+echo KEYPAIR_ID=$KEYPAIR_ID
+
+FLAVOR_ID=${FLAVOR_ID:-23}
+echo FLAVOR_ID=$FLAVOR_ID
+
+if [ $SAHARA_URL ]; then
+  sa="sahara --insecure --bypass-url $SAHARA_URL/v1.1/$OS_TENANT_ID"
+else
+  sa="sahara --insecure"
+fi
+
+sed "s/_flavorid/$FLAVOR_ID/" v271/v271master > v271/v271master_temp
+sed -i "s/_public_net/$PUBLIC_NET/" v271/v271master_temp
+masterid=`$sa node-group-template-create --json v271/v271master_temp | awk '/ id / {print \$4}'`
+if [ -z $masterid ]; then
+  masterid=`$sa node-group-template-list | awk '/v271master/ {print $4; exit;}'`
+fi
+echo v271master ID: $masterid
+
+sed "s/_flavorid/$FLAVOR_ID/" v271/v271worker > v271/v271worker_temp
+sed -i "s/_public_net/$PUBLIC_NET/" v271/v271worker_temp
+workerid=`$sa node-group-template-create --json v271/v271worker_temp | awk '/ id / {print $4}'`
+if [ -z $workerid ]; then
+  workerid=`$sa node-group-template-list | awk '/v271worker/ {print $4; exit;}'`
+fi
+echo v271worker ID: $workerid
+
+sed "s/_masterid/$masterid/" v271/v271cluster > v271/v271cluster_temp
+sed -i "s/_workerid/$workerid/" v271/v271cluster_temp
+clusterid=`$sa cluster-template-create --json v271/v271cluster_temp | awk '/ id / {print $4}'`
+if [ -z $clusterid ]; then
+  clusterid=`$sa cluster-template-list | awk '/v271 / {print $4; exit;}'`
+fi
+echo cluster ID: $clusterid
+
+# Redirect STDERR to STDOUT
+exec 2>&1
+
+sed "s/_clusterid/$clusterid/" v271/v271launch > v271/v271launch_temp
+sed -i "s/_imageid/$IMAGE_ID/" v271/v271launch_temp
+sed -i "s/_private_net/$PRIVATE_NET/" v271/v271launch_temp
+sed -i "s/_keypairid/$KEYPAIR_ID/" v271/v271launch_temp
+
+if [ $# -gt 0 ] && [ $1 -eq launch ]; then
+  $sa cluster-create --json v271/v271launch_temp
+fi
+ 

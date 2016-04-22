@@ -1,0 +1,10 @@
+{
+    "plugin_name": "cdh",
+    "hadoop_version": "5.4.0",
+    "cluster_template_id": "_clusterid",
+    "default_image_id": "_imageid",
+    "user_keypair_id": "_keypairid",
+    "name": "c540",
+    "neutron_management_network": "_private_net",
+    "cluster_configs": {}
+}

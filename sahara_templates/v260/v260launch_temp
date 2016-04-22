@@ -1,0 +1,10 @@
+{
+    "plugin_name": "vanilla",
+    "hadoop_version": "2.6.0",
+    "cluster_template_id": "2dc011ab-917b-4ed5-aaa4-fcf285e90f19",
+    "default_image_id": "50112a3e-5241-478d-8c3b-6e2f29fa7c79",
+    "user_keypair_id": "sahara_stg",
+    "name": "v260",
+    "neutron_management_network": "c5cd209f-d788-4cb2-bb60-495ba3aa6ceb",
+    "cluster_configs": {}
+}

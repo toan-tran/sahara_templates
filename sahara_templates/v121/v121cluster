@@ -1,0 +1,19 @@
+{
+    "plugin_name": "vanilla",
+    "hadoop_version": "1.2.1",
+    "node_groups": [
+        {
+            "name": "v121master",
+            "count": 1,
+            "node_group_template_id": "_masterid"
+        },
+        {
+            "name": "v121worker",
+            "count": 3,
+            "node_group_template_id": "_workerid"
+        }
+    ],
+    "name": "v121",
+    "neutron_management_network": "_private_net",
+    "cluster_configs": {}
+}

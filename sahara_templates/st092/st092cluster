@@ -1,0 +1,18 @@
+{
+   "plugin_name": "storm",
+   "hadoop_version": "0.9.2",
+   "node_groups": [
+       {
+           "name": "st092master",
+           "count": 1,
+           "node_group_template_id": "_masterid"
+       },
+       {
+           "name": "st092worker",
+           "count": 3,
+           "node_group_template_id": "_workerid"
+       }
+   ],
+   "name": "st092",
+   "cluster_configs": {}
+}

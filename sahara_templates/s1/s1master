@@ -1,0 +1,12 @@
+{
+   "plugin_name": "spark",
+   "hadoop_version": "1.0.0",
+   "node_processes": [
+       "namenode",
+       "master"
+   ],
+   "name": "s1master",
+   "auto_security_group": true,
+   "floating_ip_pool": "_public_net",
+   "flavor_id": "_flavorid"
+}

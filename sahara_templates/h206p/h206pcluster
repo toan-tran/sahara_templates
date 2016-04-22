@@ -1,0 +1,24 @@
+{
+    "plugin_name": "hdp",
+    "hadoop_version": "2.0.6",
+    "node_groups": [
+        {
+            "name": "h206pmaster1",
+            "count": 1,
+            "node_group_template_id": "_master1id"
+        },
+        {
+            "name": "h206pmaster2",
+            "count": 1,
+            "node_group_template_id": "_master2id"
+        },
+        {
+            "name": "h206pworker",
+            "count": 3,
+            "node_group_template_id": "_workerid"
+        }
+    ],
+    "name": "h206p",
+    "cluster_configs": {}
+}
+

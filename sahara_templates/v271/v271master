@@ -1,0 +1,16 @@
+{
+    "plugin_name": "vanilla",
+    "hadoop_version": "2.7.1",
+    "node_processes": [
+        "namenode",
+        "resourcemanager",
+        "oozie",
+        "historyserver",
+        "hiveserver"
+    ],
+    "name": "v271master",
+    "auto_security_group": true,
+    "floating_ip_pool": "_public_net",
+    "flavor_id": "_flavorid"
+}
+

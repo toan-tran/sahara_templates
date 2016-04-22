@@ -1,0 +1,24 @@
+{
+    "plugin_name": "cdh",
+    "hadoop_version": "5",
+    "node_groups": [
+        {
+            "name": "c5master1",
+            "count": 1,
+            "node_group_template_id": "_master1id"
+        },
+        {
+            "name": "c5master2",
+            "count": 1,
+            "node_group_template_id": "_master2id"
+        },
+        {
+            "name": "c5worker",
+            "count": 3,
+            "node_group_template_id": "_workerid"
+        }
+    ],
+    "name": "c5",
+    "cluster_configs": {}
+}
+

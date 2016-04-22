@@ -1,0 +1,14 @@
+{
+   "plugin_name": "cdh",
+   "hadoop_version": "5",
+   "node_processes": [
+       "HDFS_DATANODE",
+       "YARN_NODEMANAGER"
+   ],
+   "name": "c5worker",
+   "auto_security_group": true,
+   "floating_ip_pool": "_public_net",
+   "volumes_per_node": 1,
+   "volumes_size": 20,
+   "flavor_id": "_flavorid"
+}

@@ -1,0 +1,9 @@
+{
+    "plugin_name": "vanilla",
+    "hadoop_version": "1.2.1",
+    "cluster_template_id": "_clusterid",
+    "default_image_id": "_imageid",
+    "user_keypair_id": "_keypairid",
+    "name": "vc121",
+    "cluster_configs": {}
+}

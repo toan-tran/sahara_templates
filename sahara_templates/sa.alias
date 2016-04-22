@@ -1,0 +1,1 @@
+alias sa='sahara --insecure --bypass-url https://$SAHARA_URL:8386/v1.1/0f4f16075563476781d777875558ee76'

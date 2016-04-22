@@ -1,0 +1,13 @@
+{
+   "plugin_name": "cdh",
+   "hadoop_version": "5.4.0",
+   "node_processes": [
+       "HDFS_SECONDARYNAMENODE",
+       "OOZIE_SERVER",
+       "YARN_JOBHISTORY"
+   ],
+   "name": "c540master2",
+   "auto_security_group": true,
+   "floating_ip_pool": "_public_net",
+   "flavor_id": "_flavorid"
+}
